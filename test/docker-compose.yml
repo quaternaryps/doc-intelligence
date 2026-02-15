@@ -1,0 +1,84 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    build: ../dev/postgres
+    image: doc-intelligence/postgres:test
+    container_name: test-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-appdb}
+      POSTGRES_USER: ${POSTGRES_USER:-appuser}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-testpassword}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./postgres/init-scripts:/docker-entrypoint-initdb.d
+    ports:
+      - "5433:5432"
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-appuser}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Deno TypeScript Application
+  deno-app:
+    build: ../dev/deno-app
+    image: doc-intelligence/deno-app:test
+    container_name: test-deno-app
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-appuser}:${POSTGRES_PASSWORD:-testpassword}@postgres:5432/${POSTGRES_DB:-appdb}
+      ENV: test
+    ports:
+      - "8100:8000"
+    networks:
+      - app-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  # Python Application
+  python-app:
+    build: ../dev/python-app
+    image: doc-intelligence/python-app:test
+    container_name: test-python-app
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-appuser}:${POSTGRES_PASSWORD:-testpassword}@postgres:5432/${POSTGRES_DB:-appdb}
+      ENV: test
+    ports:
+      - "8101:8001"
+    networks:
+      - app-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  # Persistent Storage (JSON and file storage)
+  storage:
+    image: alpine:latest
+    container_name: test-storage
+    restart: unless-stopped
+    volumes:
+      - storage-data:/data
+      - json-data:/json
+    command: tail -f /dev/null
+    networks:
+      - app-network
+
+volumes:
+  postgres-data:
+    name: test-postgres-data
+  storage-data:
+    name: test-storage-data
+  json-data:
+    name: test-json-data
+
+networks:
+  app-network:
+    name: test-app-network
+    driver: bridge

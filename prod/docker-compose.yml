@@ -1,0 +1,94 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    build: ../dev/postgres
+    image: doc-intelligence/postgres:prod
+    container_name: prod-postgres
+    restart: always
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-appdb}
+      POSTGRES_USER: ${POSTGRES_USER:-appuser}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./postgres/init-scripts:/docker-entrypoint-initdb.d
+    ports:
+      - "5434:5432"
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-appuser}"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # Deno TypeScript Application
+  deno-app:
+    build: ../dev/deno-app
+    image: doc-intelligence/deno-app:prod
+    container_name: prod-deno-app
+    restart: always
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-appuser}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-appdb}
+      ENV: production
+    ports:
+      - "8200:8000"
+    networks:
+      - app-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+
+  # Python Application
+  python-app:
+    build: ../dev/python-app
+    image: doc-intelligence/python-app:prod
+    container_name: prod-python-app
+    restart: always
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-appuser}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-appdb}
+      ENV: production
+    ports:
+      - "8201:8001"
+    networks:
+      - app-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+
+  # Persistent Storage (JSON and file storage)
+  storage:
+    image: alpine:latest
+    container_name: prod-storage
+    restart: always
+    volumes:
+      - storage-data:/data
+      - json-data:/json
+    command: tail -f /dev/null
+    networks:
+      - app-network
+
+volumes:
+  postgres-data:
+    name: prod-postgres-data
+  storage-data:
+    name: prod-storage-data
+  json-data:
+    name: prod-json-data
+
+networks:
+  app-network:
+    name: prod-app-network
+    driver: bridge
