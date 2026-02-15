@@ -276,7 +276,7 @@ docker compose logs -f new-service
 NEW_VARIABLE=default_value
 ```
 
-2. Use in docker compose.yml:
+2. Use in docker-compose.yml:
 ```yaml
 environment:
   NEW_VARIABLE: ${NEW_VARIABLE:-default_value}
@@ -351,7 +351,7 @@ docker exec -it dev-postgres psql -U appuser appdb
 
 ### Container Resources
 
-Add resource limits in docker compose.yml:
+Add resource limits in docker-compose.yml:
 
 ```yaml
 services:
@@ -449,7 +449,7 @@ lsof -i :8000
 # or on Linux
 netstat -tulpn | grep 8000
 
-# Kill the process or change port in docker compose.yml
+# Kill the process or change port in docker-compose.yml
 ```
 
 ## Code Quality

@@ -44,20 +44,34 @@ cd ..
 # Validate test environment
 echo -n "  Test environment... "
 cd test
-if docker compose config --quiet 2>&1 | grep -v "WARN" > /dev/null; then
+if docker compose config --quiet > /dev/null 2>&1; then
     echo "✓"
 else
-    echo "✓ (with warnings - expected for missing .env)"
+    # Check if it's just warnings (expected for missing .env)
+    docker compose config > /dev/null 2>&1
+    if [ $? -eq 0 ]; then
+        echo "✓ (with warnings - expected for missing .env)"
+    else
+        echo "✗"
+        exit 1
+    fi
 fi
 cd ..
 
 # Validate prod environment
 echo -n "  Prod environment... "
 cd prod
-if docker compose config --quiet 2>&1 | grep -v "WARN" > /dev/null; then
+if docker compose config --quiet > /dev/null 2>&1; then
     echo "✓"
 else
-    echo "✓ (with warnings - expected for missing .env)"
+    # Check if it's just warnings (expected for missing .env)
+    docker compose config > /dev/null 2>&1
+    if [ $? -eq 0 ]; then
+        echo "✓ (with warnings - expected for missing .env)"
+    else
+        echo "✗"
+        exit 1
+    fi
 fi
 cd ..
 

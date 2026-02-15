@@ -20,11 +20,11 @@ doc-intelligence/
 │   ├── python-app/        # Python service
 │   ├── postgres/          # PostgreSQL database
 │   ├── storage/           # Persistent storage
-│   └── docker compose.yml
+│   └── docker-compose.yml
 ├── test/                   # Test environment
-│   └── docker compose.yml
+│   └── docker-compose.yml
 ├── prod/                   # Production environment
-│   └── docker compose.yml
+│   └── docker-compose.yml
 ├── scripts/               # Management scripts
 └── docs/                  # Additional documentation
 ```
