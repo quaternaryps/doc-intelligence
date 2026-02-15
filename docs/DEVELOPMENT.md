@@ -17,11 +17,11 @@ cp .env.example .env
 # Edit .env with your preferences
 
 # Build and start
-docker-compose build
-docker-compose up -d
+docker compose build
+docker compose up -d
 
 # View logs
-docker-compose logs -f
+docker compose logs -f
 ```
 
 ### Making Changes
@@ -34,10 +34,10 @@ docker-compose logs -f
 
 # Restart to pick up configuration changes
 cd dev
-docker-compose restart deno-app
+docker compose restart deno-app
 
 # View logs
-docker-compose logs -f deno-app
+docker compose logs -f deno-app
 ```
 
 #### Python Application Changes
@@ -46,14 +46,14 @@ docker-compose logs -f deno-app
 # Edit files in dev/python-app/
 
 # If you change requirements.txt:
-docker-compose build python-app
-docker-compose up -d python-app
+docker compose build python-app
+docker compose up -d python-app
 
 # Otherwise, just restart
-docker-compose restart python-app
+docker compose restart python-app
 
 # View logs
-docker-compose logs -f python-app
+docker compose logs -f python-app
 ```
 
 #### Database Schema Changes
@@ -62,9 +62,9 @@ docker-compose logs -f python-app
 # Edit dev/postgres/init-scripts/01-init.sh
 
 # Recreate database
-docker-compose down
+docker compose down
 docker volume rm dev-postgres-data
-docker-compose up -d postgres
+docker compose up -d postgres
 
 # Or apply changes manually
 docker exec -it dev-postgres psql -U appuser appdb
@@ -110,7 +110,7 @@ await serve(handler, { port: PORT });
 
 View logs:
 ```bash
-docker-compose logs -f deno-app
+docker compose logs -f deno-app
 ```
 
 #### Python Debugging
@@ -236,10 +236,10 @@ EXPOSE 3000
 CMD ["npm", "start"]
 ```
 
-### 3. Update docker-compose.yml
+### 3. Update docker compose.yml
 
 ```yaml
-# dev/docker-compose.yml
+# dev/docker compose.yml
 services:
   # ... existing services ...
   
@@ -262,8 +262,8 @@ services:
 
 ```bash
 cd dev
-docker-compose up -d new-service
-docker-compose logs -f new-service
+docker compose up -d new-service
+docker compose logs -f new-service
 ```
 
 ## Environment Variables
@@ -276,7 +276,7 @@ docker-compose logs -f new-service
 NEW_VARIABLE=default_value
 ```
 
-2. Use in docker-compose.yml:
+2. Use in docker compose.yml:
 ```yaml
 environment:
   NEW_VARIABLE: ${NEW_VARIABLE:-default_value}
@@ -351,7 +351,7 @@ docker exec -it dev-postgres psql -U appuser appdb
 
 ### Container Resources
 
-Add resource limits in docker-compose.yml:
+Add resource limits in docker compose.yml:
 
 ```yaml
 services:
@@ -401,17 +401,17 @@ volumes:
 
 ```bash
 # Check logs
-docker-compose logs [service-name]
+docker compose logs [service-name]
 
 # Check container status
-docker-compose ps
+docker compose ps
 
 # Inspect container
 docker inspect dev-[service-name]
 
 # Remove and recreate
-docker-compose down
-docker-compose up -d
+docker compose down
+docker compose up -d
 ```
 
 ### Network Issues
@@ -449,7 +449,7 @@ lsof -i :8000
 # or on Linux
 netstat -tulpn | grep 8000
 
-# Kill the process or change port in docker-compose.yml
+# Kill the process or change port in docker compose.yml
 ```
 
 ## Code Quality

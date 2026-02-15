@@ -11,7 +11,7 @@ echo "Building Docker images for $ENVIRONMENT environment..."
 cd "$ENVIRONMENT"
 
 # Build all images
-docker-compose build --parallel
+docker compose build --parallel
 
 echo "✓ Build completed for $ENVIRONMENT environment"
 

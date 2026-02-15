@@ -16,11 +16,11 @@ echo "Cleaning up Docker resources for $ENVIRONMENT environment..."
 cd "$ENVIRONMENT"
 
 # Stop and remove containers
-docker-compose down
+docker compose down
 
 if [ "$REMOVE_VOLUMES" = true ]; then
     echo "Removing volumes..."
-    docker-compose down -v
+    docker compose down -v
     echo "⚠ All data volumes removed"
 fi
 

@@ -11,6 +11,6 @@ echo "Stopping containers for $ENVIRONMENT environment..."
 cd "$ENVIRONMENT"
 
 # Stop containers
-docker-compose down
+docker compose down
 
 echo "✓ Containers stopped for $ENVIRONMENT environment"

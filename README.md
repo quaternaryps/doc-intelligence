@@ -20,11 +20,11 @@ doc-intelligence/
 │   ├── python-app/        # Python service
 │   ├── postgres/          # PostgreSQL database
 │   ├── storage/           # Persistent storage
-│   └── docker-compose.yml
+│   └── docker compose.yml
 ├── test/                   # Test environment
-│   └── docker-compose.yml
+│   └── docker compose.yml
 ├── prod/                   # Production environment
-│   └── docker-compose.yml
+│   └── docker compose.yml
 ├── scripts/               # Management scripts
 └── docs/                  # Additional documentation
 ```
@@ -56,7 +56,7 @@ cd doc-intelligence
 ./scripts/start.sh dev
 
 # View logs
-cd dev && docker-compose logs -f
+cd dev && docker compose logs -f
 ```
 
 Access services at:
@@ -166,7 +166,7 @@ echo $GITHUB_TOKEN | docker login ghcr.io -u USERNAME --password-stdin
 
 # Start using pulled images
 cd prod
-docker-compose up -d
+docker compose up -d
 ```
 
 ## 🔄 Workflow: Dev → Test → Prod
@@ -176,13 +176,13 @@ docker-compose up -d
 ```bash
 # Develop and test locally
 cd dev
-docker-compose up -d
+docker compose up -d
 
 # Make changes to application code
 # Test changes
 
 # Rebuild when ready
-docker-compose build
+docker compose build
 ```
 
 ### 2. Promote to Test
@@ -295,10 +295,10 @@ cp .env.example .env
 # Edit .env as needed
 
 # 5. Start services
-docker-compose up -d
+docker compose up -d
 
 # 6. View logs
-docker-compose logs -f
+docker compose logs -f
 ```
 
 ### Sharing Changes
@@ -307,8 +307,8 @@ docker-compose logs -f
 # 1. Make and test changes in dev
 cd dev
 # ... make changes ...
-docker-compose build
-docker-compose up -d
+docker compose build
+docker compose up -d
 
 # 2. Build and tag for test
 cd ..
@@ -326,13 +326,13 @@ cd ..
 ```bash
 # All services
 cd [env]
-docker-compose logs -f
+docker compose logs -f
 
 # Specific service
-docker-compose logs -f deno-app
+docker compose logs -f deno-app
 
 # Last N lines
-docker-compose logs --tail=100 python-app
+docker compose logs --tail=100 python-app
 ```
 
 ## 🧹 Cleanup
@@ -355,18 +355,18 @@ docker-compose logs --tail=100 python-app
 ```bash
 # Check logs
 cd [env]
-docker-compose logs
+docker compose logs
 
 # Check service status
-docker-compose ps
+docker compose ps
 
 # Restart specific service
-docker-compose restart [service-name]
+docker compose restart [service-name]
 ```
 
 ### Port conflicts
 
-Edit the docker-compose.yml file to change port mappings:
+Edit the docker compose.yml file to change port mappings:
 
 ```yaml
 ports:
@@ -377,13 +377,13 @@ ports:
 
 ```bash
 # Check PostgreSQL is running
-docker-compose ps postgres
+docker compose ps postgres
 
 # Check connection
 docker exec [env]-postgres pg_isready -U appuser
 
 # View database logs
-docker-compose logs postgres
+docker compose logs postgres
 ```
 
 ## 📚 Additional Resources
