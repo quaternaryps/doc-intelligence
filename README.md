@@ -31,6 +31,8 @@ doc-intelligence/
 
 ## 🚀 Quick Start
 
+**New to this project?** Check out the [Quick Start Guide](docs/QUICKSTART.md) for a streamlined onboarding experience.
+
 ### Prerequisites
 
 - Docker Engine 20.10+
@@ -386,8 +388,18 @@ docker exec [env]-postgres pg_isready -U appuser
 docker compose logs postgres
 ```
 
-## 📚 Additional Resources
+## 📚 Documentation
 
+### Getting Started
+- **[Quick Start Guide](docs/QUICKSTART.md)** - Fast onboarding for consultants and new team members
+- **[Development Guide](docs/DEVELOPMENT.md)** - Detailed development workflow and best practices
+- **[Contributing Guide](CONTRIBUTING.md)** - How to contribute to this project
+
+### Technical Documentation
+- **[Architecture Overview](docs/ARCHITECTURE.md)** - System architecture and component design
+- **[Registry Setup](docs/REGISTRY_SETUP.md)** - Container registry configuration and workflow
+
+### External Resources
 - [Docker Documentation](https://docs.docker.com/)
 - [Docker Compose Documentation](https://docs.docker.com/compose/)
 - [Deno Documentation](https://deno.land/manual)
@@ -395,11 +407,14 @@ docker compose logs postgres
 
 ## 🤝 Contributing
 
+We welcome contributions from team members and consultants! Please read the [Contributing Guide](CONTRIBUTING.md) before submitting pull requests.
+
+**Quick contribution steps**:
 1. Create a feature branch
 2. Make changes in `dev/` environment
-3. Test thoroughly
+3. Test thoroughly with `./scripts/validate.sh`
 4. Build and test in `test/` environment
-5. Submit pull request
+5. Submit pull request with clear description
 
 ## 📄 License
 
