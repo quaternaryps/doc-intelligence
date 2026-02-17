@@ -1,0 +1,40 @@
+# Secrets
+.env
+*.env.local
+
+# Node / Next.js
+node_modules/
+.next/
+out/
+
+# Deno
+.deno/
+
+# OS files
+.DS_Store
+Thumbs.db
+*~
+
+# IDE / Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+.project
+.buildpath
+.settings/
+
+# Docker
+docker-compose.override.yml
+
+# Logs
+logs/
+*.log
+
+# Data / Reports
+*.csv
+*.json.bak
+
+# Backups
+backups/
+*.backup

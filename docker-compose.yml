@@ -1,0 +1,130 @@
+services:
+  mariadb:
+    image: mariadb:10.3
+    container_name: doc-intel-mariadb
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    volumes:
+      - mariadb-data:/var/lib/mysql
+    networks:
+      - doc-intel-network
+    ports:
+      - "${MARIADB_PORT:-3306}:3306"
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+
+  drupal:
+    build: ./docman-docker
+    container_name: doc-intel-drupal
+    restart: unless-stopped
+    depends_on:
+      - mariadb
+    volumes:
+      - drupal-files:/var/www/html/sites/default/files
+      - ./docman-docker/drupal-modules/docman:/var/www/html/sites/all/modules/docman
+      - ./docman-docker/drupal-modules/date-time-field:/var/www/html/sites/all/modules/date-time-field
+      - ./docman-docker/drupal-modules/entity:/var/www/html/sites/all/modules/entity
+      - ./docman-docker/drupal-themes/antonelli:/var/www/html/sites/all/themes/antonelli
+      - ./docman-docker/settings.php:/var/www/html/sites/default/settings.php
+      - drupal-core:/var/www/html
+    networks:
+      - doc-intel-network
+    ports:
+      - "${DRUPAL_PORT:-80}:80"
+    environment:
+      DRUPAL_DB_HOST: mariadb
+      DRUPAL_DB_PORT: "3306"
+      DRUPAL_DB_NAME: ${MYSQL_DATABASE}
+      DRUPAL_DB_USER: ${MYSQL_USER}
+      DRUPAL_DB_PASSWORD: ${MYSQL_PASSWORD}
+
+  autoprocessor-api:
+    build: ./dms-automation/dms-autoprocessor
+    container_name: doc-intel-autoprocessor-api
+    restart: unless-stopped
+    depends_on:
+      - mariadb
+    volumes:
+      - documents:/data/documents
+    networks:
+      - doc-intel-network
+    environment:
+      MYSQL_HOST: mariadb
+      MYSQL_PORT: "3306"
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      PORT: "8000"
+      AZURE_OCR_ENDPOINT: ${AZURE_OCR_ENDPOINT:-}
+      AZURE_OCR_KEY: ${AZURE_OCR_KEY:-}
+      AZURE_OPENAI_ENDPOINT: ${AZURE_OPENAI_ENDPOINT:-}
+      AZURE_OPENAI_KEY: ${AZURE_OPENAI_KEY:-}
+    ports:
+      - "${AUTOPROCESSOR_PORT:-8000}:8000"
+    command: ["deno", "run", "--allow-all", "--no-lock", "main.ts"]
+
+  autoprocessor-cron:
+    build: ./dms-automation/dms-autoprocessor
+    container_name: doc-intel-autoprocessor-cron
+    restart: unless-stopped
+    depends_on:
+      - mariadb
+    volumes:
+      - documents:/data/documents
+    networks:
+      - doc-intel-network
+    environment:
+      MYSQL_HOST: mariadb
+      MYSQL_PORT: "3306"
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      RUN_ON_STARTUP: "false"
+      CRON_SCHEDULE: ${CRON_SCHEDULE:-0 17 * * *}
+    command: ["deno", "run", "--allow-all", "--no-lock", "cron.ts"]
+
+  review-ui:
+    build: ./dms-automation/dms-review-ui
+    container_name: doc-intel-review-ui
+    restart: unless-stopped
+    depends_on:
+      - mariadb
+    volumes:
+      - documents:/data/documents:ro
+    networks:
+      - doc-intel-network
+    environment:
+      MYSQL_HOST: mariadb
+      MYSQL_PORT: "3306"
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+    ports:
+      - "${REVIEW_UI_PORT:-3500}:3500"
+
+  menu-portal:
+    build: ./dms-automation/menu-portal
+    container_name: doc-intel-menu-portal
+    restart: unless-stopped
+    depends_on:
+      - autoprocessor-api
+    networks:
+      - doc-intel-network
+    environment:
+      AUTOPROCESSOR_URL: http://autoprocessor-api:8000
+      PORT: "5000"
+    ports:
+      - "${MENU_PORTAL_PORT:-5000}:5000"
+
+volumes:
+  mariadb-data:
+  drupal-files:
+  drupal-core:
+  documents:
+
+networks:
+  doc-intel-network:
+    driver: bridge

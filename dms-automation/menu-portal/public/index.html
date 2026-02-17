@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ethio-American Insurance - IT Portal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e8f5e9 0%, #f1f8f4 50%, #e3f2fd 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #2e7d32 0%, #388e3c 100%);
+            color: white;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+        
+        .logo-placeholder {
+            width: 60px;
+            height: 60px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+        
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+        
+        .subtitle {
+            font-size: 0.95rem;
+            opacity: 0.95;
+            margin-top: 0.25rem;
+        }
+        
+        main {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+        
+        .container {
+            max-width: 900px;
+            width: 100%;
+        }
+        
+        .welcome-text {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .welcome-text h2 {
+            color: #2e7d32;
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .welcome-text p {
+            color: #555;
+            font-size: 1rem;
+        }
+        
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+            border: 2px solid transparent;
+        }
+        
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 40px rgba(46, 125, 50, 0.15);
+            border-color: #4caf50;
+        }
+        
+        .card-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .card-green .card-icon {
+            background: linear-gradient(135deg, #66bb6a 0%, #43a047 100%);
+        }
+        
+        .card-blue .card-icon {
+            background: linear-gradient(135deg, #42a5f5 0%, #1e88e5 100%);
+        }
+        
+        .card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 0.75rem;
+            color: #2e7d32;
+        }
+        
+        .card p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+        }
+        
+        .card-features {
+            list-style: none;
+            margin-top: 1rem;
+        }
+        
+        .card-features li {
+            padding: 0.4rem 0;
+            color: #777;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .card-features li:before {
+            content: "✓";
+            color: #4caf50;
+            font-weight: bold;
+        }
+        
+        .card-button {
+            display: inline-block;
+            margin-top: 1.5rem;
+            padding: 0.75rem 2rem;
+            background: linear-gradient(135deg, #66bb6a 0%, #43a047 100%);
+            color: white;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        
+        .card:hover .card-button {
+            background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%);
+            transform: scale(1.05);
+        }
+        
+        footer {
+            text-align: center;
+            padding: 1.5rem;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: #e8f5e9;
+            color: #2e7d32;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-left: 0.5rem;
+        }
+
+        .card-purple .card-icon {
+            background: linear-gradient(135deg, #ab47bc 0%, #8e24aa 100%);
+        }
+
+        .card-purple h3 {
+            color: #7b1fa2;
+        }
+
+        .card-purple:hover {
+            border-color: #ab47bc;
+            box-shadow: 0 12px 40px rgba(123, 31, 162, 0.15);
+        }
+
+        /* Processing page styles */
+        #processing-page {
+            display: none;
+            max-width: 900px;
+            width: 100%;
+        }
+
+        #processing-page.active {
+            display: block;
+        }
+
+        #menu-page.hidden {
+            display: none;
+        }
+
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            color: #555;
+            margin-bottom: 1.5rem;
+            transition: all 0.2s ease;
+        }
+
+        .back-button:hover {
+            background: #e0e0e0;
+        }
+
+        .process-panel {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .process-panel h2 {
+            color: #7b1fa2;
+            margin-bottom: 0.5rem;
+        }
+
+        .process-panel .description {
+            color: #666;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            background: white;
+            cursor: pointer;
+        }
+
+        .form-group select:focus {
+            border-color: #ab47bc;
+            outline: none;
+        }
+
+        .process-btn {
+            padding: 0.85rem 2.5rem;
+            background: linear-gradient(135deg, #ab47bc 0%, #8e24aa 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .process-btn:hover:not(:disabled) {
+            background: linear-gradient(135deg, #9c27b0 0%, #7b1fa2 100%);
+            transform: scale(1.03);
+        }
+
+        .process-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .status-area {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .status-area.visible {
+            display: block;
+        }
+
+        .status-area.loading {
+            background: #f3e5f5;
+            color: #7b1fa2;
+        }
+
+        .status-area.success {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .status-area.error {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .status-area h4 {
+            margin-bottom: 0.5rem;
+        }
+
+        .result-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+
+        .stat-box {
+            background: white;
+            padding: 0.75rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-box .stat-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .stat-box .stat-label {
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        .folder-list {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 0.75rem;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+        }
+
+        .folder-item {
+            padding: 0.6rem 1rem;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: background 0.15s ease;
+        }
+
+        .folder-item:hover {
+            background: #f3e5f5;
+        }
+
+        .folder-item:last-child {
+            border-bottom: none;
+        }
+
+        .folder-item .folder-date {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .folder-item .folder-path {
+            font-size: 0.8rem;
+            color: #999;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="logo-placeholder">🏢</div>
+            <div>
+                <h1>Ethio-American Insurance</h1>
+                <div class="subtitle">Document Management Systems Portal</div>
+            </div>
+        </div>
+    </header>
+    
+    <main>
+        <div class="container" id="menu-page">
+            <div class="welcome-text">
+                <h2>Welcome! Select a System</h2>
+                <p>Choose the tool you need to access</p>
+            </div>
+
+            <div class="cards">
+                <a href="http://10.100.128.125" class="card card-blue">
+                    <div class="card-icon">📄</div>
+                    <h3>Document Management</h3>
+                    <p>Traditional DMS for searching and viewing documents</p>
+                    <ul class="card-features">
+                        <li>Search by policy number</li>
+                        <li>View document history</li>
+                        <li>Download PDFs</li>
+                        <li>Print documents</li>
+                    </ul>
+                    <div class="card-button">Open DMS &rarr;</div>
+                </a>
+
+                <a href="http://10.100.128.125:3000" class="card card-green">
+                    <div class="card-icon">⚡</div>
+                    <h3>Batch Document Entry <span class="badge">NEW</span></h3>
+                    <p>Fast bulk upload with AI-powered classification</p>
+                    <ul class="card-features">
+                        <li>AI document classification</li>
+                        <li>Thumbnail preview</li>
+                        <li>Quick metadata editing</li>
+                        <li>10x faster processing</li>
+                    </ul>
+                    <div class="card-button">Launch Batch Entry &rarr;</div>
+                </a>
+
+                <div class="card card-purple" onclick="showProcessingPage()">
+                    <div class="card-icon">🗂️</div>
+                    <h3>Process Company Folder <span class="badge">NEW</span></h3>
+                    <p>Import scanned documents from NAS Company folders into DMS</p>
+                    <ul class="card-features">
+                        <li>Select daily folder by date</li>
+                        <li>Auto-parse policy &amp; doc type</li>
+                        <li>Duplicate detection</li>
+                        <li>Processing log &amp; stats</li>
+                    </ul>
+                    <div class="card-button">Open Processor &rarr;</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="processing-page">
+            <button class="back-button" onclick="showMenuPage()">&larr; Back to Menu</button>
+
+            <div class="process-panel">
+                <h2>Process Company Folder</h2>
+                <p class="description">Select a daily folder from the NAS to process. Files will be parsed, checked for duplicates, and imported into the DMS.</p>
+
+                <div class="form-group">
+                    <label>Year</label>
+                    <select id="year-select" onchange="loadFolders()">
+                        <option value="2026" selected>2026</option>
+                        <option value="2025">2025 Archive</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Select a Folder</label>
+                    <div id="folder-loading" style="color:#999; display:none;">Loading folders...</div>
+                    <div id="folder-list" class="folder-list" style="display:none;"></div>
+                    <div id="no-folders" style="color:#999; display:none;">No folders found for selected year.</div>
+                </div>
+
+                <div id="selected-folder-info" style="display:none; margin-bottom:1.25rem; padding:0.75rem 1rem; background:#f3e5f5; border-radius:8px;">
+                    <strong>Selected:</strong> <span id="selected-folder-label"></span>
+                </div>
+
+                <button class="process-btn" id="process-btn" onclick="processFolder()" disabled>
+                    Process Selected Folder
+                </button>
+
+                <div class="status-area" id="status-area">
+                    <h4 id="status-title"></h4>
+                    <p id="status-message"></p>
+                    <div class="result-stats" id="result-stats" style="display:none;"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <footer>
+        <p>Ethio-American Insurance Company • IT Systems Portal</p>
+        <p style="margin-top: 0.5rem; font-size: 0.85rem; color: #999;">
+            Every Dollar Matters.
+        </p>
+    </footer>
+    <script>
+        let selectedFolderPath = null;
+
+        function showProcessingPage() {
+            document.getElementById('menu-page').classList.add('hidden');
+            document.getElementById('processing-page').classList.add('active');
+            loadFolders();
+        }
+
+        function showMenuPage() {
+            document.getElementById('processing-page').classList.remove('active');
+            document.getElementById('menu-page').classList.remove('hidden');
+            selectedFolderPath = null;
+        }
+
+        async function loadFolders() {
+            const year = document.getElementById('year-select').value;
+            const folderList = document.getElementById('folder-list');
+            const folderLoading = document.getElementById('folder-loading');
+            const noFolders = document.getElementById('no-folders');
+
+            folderList.style.display = 'none';
+            noFolders.style.display = 'none';
+            folderLoading.style.display = 'block';
+
+            // Reset selection
+            selectedFolderPath = null;
+            document.getElementById('selected-folder-info').style.display = 'none';
+            document.getElementById('process-btn').disabled = true;
+
+            try {
+                const response = await fetch(`/api/folders?year=${year}`);
+                const data = await response.json();
+
+                folderLoading.style.display = 'none';
+
+                if (!data.folders || data.folders.length === 0) {
+                    noFolders.style.display = 'block';
+                    return;
+                }
+
+                // Sort most recent first
+                const folders = data.folders.reverse();
+
+                folderList.innerHTML = folders.map(f =>
+                    `<div class="folder-item" onclick="selectFolder('${f.path}', '${f.date}')">
+                        <span class="folder-date">${f.date}</span>
+                        <span class="folder-path">${f.path}</span>
+                    </div>`
+                ).join('');
+
+                folderList.style.display = 'block';
+            } catch (error) {
+                folderLoading.style.display = 'none';
+                noFolders.textContent = 'Error loading folders: ' + error.message;
+                noFolders.style.display = 'block';
+            }
+        }
+
+        function selectFolder(path, date) {
+            selectedFolderPath = path;
+            document.getElementById('selected-folder-label').textContent = `${date} (${path})`;
+            document.getElementById('selected-folder-info').style.display = 'block';
+            document.getElementById('process-btn').disabled = false;
+
+            // Highlight selected item
+            document.querySelectorAll('.folder-item').forEach(el => {
+                el.style.background = el.querySelector('.folder-path').textContent === path
+                    ? '#f3e5f5' : '';
+            });
+        }
+
+        async function processFolder() {
+            if (!selectedFolderPath) return;
+
+            const statusArea = document.getElementById('status-area');
+            const statusTitle = document.getElementById('status-title');
+            const statusMessage = document.getElementById('status-message');
+            const resultStats = document.getElementById('result-stats');
+            const processBtn = document.getElementById('process-btn');
+
+            // Show loading state
+            processBtn.disabled = true;
+            processBtn.textContent = 'Processing...';
+            statusArea.className = 'status-area visible loading';
+            statusTitle.textContent = 'Processing folder...';
+            statusMessage.textContent = `Importing files from ${selectedFolderPath}. This may take a few minutes.`;
+            resultStats.style.display = 'none';
+
+            try {
+                const response = await fetch('/api/process-folder', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ folderPath: selectedFolderPath }),
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    statusArea.className = 'status-area visible success';
+                    statusTitle.textContent = 'Processing Complete!';
+                    statusMessage.textContent = `Folder ${data.folderDate || ''} processed successfully.`;
+
+                    resultStats.innerHTML = `
+                        <div class="stat-box">
+                            <div class="stat-number">${data.totalFiles || 0}</div>
+                            <div class="stat-label">Total Files</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-number" style="color:#2e7d32">${data.processed || 0}</div>
+                            <div class="stat-label">Processed</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-number" style="color:#f57c00">${data.duplicates || 0}</div>
+                            <div class="stat-label">Duplicates</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-number" style="color:#1565c0">${data.queued || 0}</div>
+                            <div class="stat-label">Queued</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-number" style="color:#c62828">${data.errors || 0}</div>
+                            <div class="stat-label">Errors</div>
+                        </div>
+                    `;
+                    resultStats.style.display = 'grid';
+                } else {
+                    statusArea.className = 'status-area visible error';
+                    statusTitle.textContent = 'Processing Failed';
+                    statusMessage.textContent = data.error || 'Unknown error occurred';
+                }
+            } catch (error) {
+                statusArea.className = 'status-area visible error';
+                statusTitle.textContent = 'Connection Error';
+                statusMessage.textContent = 'Could not reach the autoprocessor API. Is the service running?';
+            }
+
+            processBtn.disabled = false;
+            processBtn.textContent = 'Process Selected Folder';
+        }
+    </script>
+</body>
+</html>

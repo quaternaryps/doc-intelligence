@@ -1,0 +1,73 @@
+<?php
+function docman_schema() {
+  $schema['docman'] = array(
+    'description' => 'The base table for docman',
+    'fields' => array(
+      'pid' => array(
+        'description' => 'Primary identifier for the entity',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'vid' => array(
+        'description' => 'Current version of the entity',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'created' => array(
+        'description' => 'The UNIX timestamp of when the entity was created',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'changed' => array(
+        'description' => 'The Unix timestamp of the most recent save',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+    ),
+    'primary key' => array('pid'),
+  );
+  
+  $schema['docman_revision'] = array(
+    'description' => 'Revision table for docman',
+    'fields' => array(
+      'pid' => array(
+        'description' => 'ID associated with this revision',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'vid' => array(
+        'description' => 'Primary identitier for the revision',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'timestamp' => array(
+        'description' => 'The UNIX timestamp of the revision save',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'uid' => array(
+        'description' => 'The author of the revision',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+    ),
+    'primary key' => array('vid'),
+    'indexes' => array(
+      'pid' => array('pid', 'vid'),
+    ),
+  );
+  
+  return $schema;
+}
+?>

@@ -1,0 +1,5 @@
+name = Document Management System
+description = Provides everything required for storing and retrieving documents.
+core = 7.x
+files[] = docman.module
+dependencies[] = entity
