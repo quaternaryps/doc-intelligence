@@ -31,7 +31,7 @@ if command -v infisical &> /dev/null; then
             --client-id="$INFISICAL_UNIVERSAL_AUTH_CLIENT_ID" \
             --client-secret="$INFISICAL_UNIVERSAL_AUTH_CLIENT_SECRET" \
             --silent --plain)
-        infisical run --env=prod -- $COMPOSE_CMD "$@"
+        infisical run --env=prod --projectId="be6cf11e-7475-4183-88de-85c7363dc034" -- $COMPOSE_CMD "$@"
     fi
 else
     echo "Infisical CLI not found. Using .env file for secrets."
