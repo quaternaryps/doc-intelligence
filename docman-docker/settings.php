@@ -313,7 +313,7 @@ $drupal_hash_salt = 'JipU9X2FgJ_YcejXQ1BUDw5sSnW-fXpqnhH3jx7BQq0';
  * for you.
  */
 # $base_url = 'http://www.example.com';  // NO trailing slash!
-$base_url = 'http://10.100.128.125';
+$base_url = getenv('DRUPAL_BASE_URL') ?: 'http://localhost';
 
 /**
  * PHP settings:

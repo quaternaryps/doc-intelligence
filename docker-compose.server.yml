@@ -1,0 +1,72 @@
+# Production Server Overlay
+# Usage: docker compose -f docker-compose.yml -f docker-compose.server.yml up -d --build
+#   or:  ./prod.sh up -d --build
+#
+# Disables the internal MariaDB and Drupal (provided by docman-docker stack).
+# Connects DMS services to the external docman-docker network.
+# Binds host paths for documents and NAS mounts.
+
+services:
+  mariadb:
+    profiles: ["disabled"]
+
+  drupal:
+    profiles: ["disabled"]
+
+  autoprocessor-api:
+    container_name: dms-prod-autoprocessor-api
+    depends_on: []
+    environment:
+      MYSQL_HOST: docman-mariadb
+    volumes:
+      - /mnt/nas_share:/mnt/nas_share:ro
+      - /mnt/nas_company:/mnt/nas_company:ro
+      - /data/documents:/data/documents
+    networks:
+      - docman-network
+    ports:
+      - "8000:8000"
+
+  autoprocessor-cron:
+    container_name: dms-prod-autoprocessor-cron
+    depends_on: []
+    environment:
+      MYSQL_HOST: docman-mariadb
+    volumes:
+      - /mnt/nas_share:/mnt/nas_share:ro
+      - /mnt/nas_company:/mnt/nas_company:ro
+      - /data/documents:/data/documents
+    networks:
+      - docman-network
+
+  review-ui:
+    container_name: dms-prod-review-ui
+    depends_on: []
+    environment:
+      MYSQL_HOST: docman-mariadb
+      NEXT_PUBLIC_DMS_URL: ${NEXT_PUBLIC_DMS_URL:-http://dms.ethio-domain.local}
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://dms.ethio-domain.local:8000}
+      NEXT_PUBLIC_MENU_URL: ${NEXT_PUBLIC_MENU_URL:-http://dms.ethio-domain.local:5000}
+    volumes:
+      - /data/documents:/data/documents:ro
+    networks:
+      - docman-network
+    ports:
+      - "3000:3500"
+
+  menu-portal:
+    container_name: dms-prod-menu-portal
+    depends_on: []
+    environment:
+      AUTOPROCESSOR_URL: http://dms-prod-autoprocessor-api:8000
+    networks:
+      - docman-network
+    ports:
+      - "5000:5000"
+
+networks:
+  doc-intel-network:
+    driver: bridge
+  docman-network:
+    external: true
+    name: docman-docker_docman-network

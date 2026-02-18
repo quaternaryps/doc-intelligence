@@ -8,7 +8,7 @@ import BrowseModal from './BrowseModal'
 import ApprovalLogModal from './ApprovalLogModal'
 import BacklogLogModal from './BacklogLogModal'
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://10.100.128.125:8000'
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
 
 export interface Document {
   fid: number

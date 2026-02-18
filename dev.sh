@@ -1,27 +1,35 @@
 #!/bin/bash
-# DMS Dev Stack Manager (Infisical-powered)
-# Usage: ./dev.sh -d --build
+# DMS Dev Server Stack
+# Usage: ./dev.sh up -d --build
 #        ./dev.sh down
 #        ./dev.sh logs -f autoprocessor-api
 #        ./dev.sh ps
 #
-# Requires: INFISICAL_CLIENT_ID and INFISICAL_CLIENT_SECRET in your environment
+# Runs its own MariaDB on :3307 with shifted ports to avoid prod conflicts.
+# Secrets are injected via Infisical or .env file.
 
 set -e
 cd "$(dirname "$0")"
 
-if [ -z "$INFISICAL_CLIENT_ID" ] || [ -z "$INFISICAL_CLIENT_SECRET" ]; then
-    echo "ERROR: INFISICAL_CLIENT_ID and INFISICAL_CLIENT_SECRET must be set."
-    echo "Add them to your ~/.bashrc or ~/.zshrc:"
-    echo '  export INFISICAL_CLIENT_ID="your-client-id"'
-    echo '  export INFISICAL_CLIENT_SECRET="your-client-secret"'
-    exit 1
+COMPOSE_CMD="docker compose -f docker-compose.yml -f docker-compose.dev-server.yml -p dms-dev"
+
+# Check if Infisical is available
+if command -v infisical &> /dev/null; then
+    if [ -z "$INFISICAL_CLIENT_ID" ] || [ -z "$INFISICAL_CLIENT_SECRET" ]; then
+        echo "WARNING: Infisical CLI found but INFISICAL_CLIENT_ID / INFISICAL_CLIENT_SECRET not set."
+        echo "Falling back to .env file."
+        echo ""
+        $COMPOSE_CMD "$@"
+    else
+        export INFISICAL_TOKEN=$(infisical login \
+            --method=universal-auth \
+            --client-id="$INFISICAL_CLIENT_ID" \
+            --client-secret="$INFISICAL_CLIENT_SECRET" \
+            --silent --plain)
+        infisical run --env=dev -- $COMPOSE_CMD "$@"
+    fi
+else
+    echo "Infisical CLI not found. Using .env file for secrets."
+    echo ""
+    $COMPOSE_CMD "$@"
 fi
-
-export INFISICAL_TOKEN=$(infisical login \
-  --method=universal-auth \
-  --client-id="$INFISICAL_CLIENT_ID" \
-  --client-secret="$INFISICAL_CLIENT_SECRET" \
-  --silent --plain)
-
-infisical run --env=dev -- docker compose up "$@"

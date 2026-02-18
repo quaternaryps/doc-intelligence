@@ -221,7 +221,7 @@ function Header() {
             <a href="/" className="px-4 py-2 bg-white text-red-600 rounded-lg font-medium hover:bg-red-50 transition">
               Review Queue
             </a>
-            <a href="http://10.100.128.125:5000" className="px-4 py-2 bg-red-800 text-white rounded-lg font-medium hover:bg-red-900 transition">
+            <a href={process.env.NEXT_PUBLIC_MENU_URL || "http://localhost:5000"} className="px-4 py-2 bg-red-800 text-white rounded-lg font-medium hover:bg-red-900 transition">
               Main Menu
             </a>
           </div>

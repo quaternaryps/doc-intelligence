@@ -155,7 +155,8 @@ export default function DocumentViewer({ document, onApprove, onSkip, onDelete, 
   const openOriginalDMS = () => {
     if (policyNumber) {
       // Open original Drupal DMS with policy number lookup
-      window.open(`http://10.100.128.125/search?search=${encodeURIComponent(policyNumber)}&&`, '_blank')
+      const dmsUrl = process.env.NEXT_PUBLIC_DMS_URL || 'http://localhost'
+      window.open(`${dmsUrl}/search?search=${encodeURIComponent(policyNumber)}&&`, '_blank')
     } else {
       alert('Please enter a policy number first')
     }

@@ -1,0 +1,83 @@
+# Dev Server Overlay
+# Usage: docker compose -f docker-compose.yml -f docker-compose.dev-server.yml up -d --build
+#   or:  ./dev.sh up -d --build
+#
+# Runs its own MariaDB on :3307 (synced from prod via sync-db.sh).
+# Shifts all ports to avoid conflicting with production.
+# Connects to external docman network for Drupal access.
+# Disables the internal Drupal (uses production Drupal at :80).
+
+services:
+  mariadb:
+    container_name: dms-dev-mariadb
+    volumes:
+      - /data/mysql/dev-mariadb-data:/var/lib/mysql
+    networks:
+      - dms-dev-network
+    ports:
+      - "3307:3306"
+
+  drupal:
+    profiles: ["disabled"]
+
+  autoprocessor-api:
+    container_name: dms-dev-autoprocessor-api
+    depends_on:
+      - mariadb
+    environment:
+      MYSQL_HOST: dms-dev-mariadb
+      PORT: "8500"
+    volumes:
+      - /mnt/nas_share:/mnt/nas_share:ro
+      - /mnt/nas_company:/mnt/nas_company:ro
+      - /data/documents:/data/documents
+    networks:
+      - dms-dev-network
+    ports:
+      - "8500:8500"
+
+  autoprocessor-cron:
+    container_name: dms-dev-autoprocessor-cron
+    depends_on:
+      - mariadb
+    environment:
+      MYSQL_HOST: dms-dev-mariadb
+    volumes:
+      - /mnt/nas_share:/mnt/nas_share:ro
+      - /mnt/nas_company:/mnt/nas_company:ro
+      - /data/documents:/data/documents
+    networks:
+      - dms-dev-network
+
+  review-ui:
+    container_name: dms-dev-review-ui
+    depends_on:
+      - mariadb
+    environment:
+      MYSQL_HOST: dms-dev-mariadb
+      NEXT_PUBLIC_DMS_URL: ${NEXT_PUBLIC_DMS_URL:-http://dms.ethio-domain.local}
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://dms.ethio-domain.local:8500}
+      NEXT_PUBLIC_MENU_URL: ${NEXT_PUBLIC_MENU_URL:-http://dms.ethio-domain.local:5500}
+    volumes:
+      - /data/documents:/data/documents:ro
+    networks:
+      - dms-dev-network
+    ports:
+      - "3500:3500"
+
+  menu-portal:
+    container_name: dms-dev-menu-portal
+    depends_on: []
+    environment:
+      AUTOPROCESSOR_URL: http://dms-dev-autoprocessor-api:8500
+      PORT: "5500"
+    networks:
+      - dms-dev-network
+    ports:
+      - "5500:5500"
+
+networks:
+  doc-intel-network:
+    driver: bridge
+  dms-dev-network:
+    driver: bridge

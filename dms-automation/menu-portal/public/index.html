@@ -419,7 +419,7 @@
             </div>
 
             <div class="cards">
-                <a href="http://10.100.128.125" class="card card-blue">
+                <a id="dms-link" href="#" class="card card-blue">
                     <div class="card-icon">📄</div>
                     <h3>Document Management</h3>
                     <p>Traditional DMS for searching and viewing documents</p>
@@ -432,7 +432,7 @@
                     <div class="card-button">Open DMS &rarr;</div>
                 </a>
 
-                <a href="http://10.100.128.125:3000" class="card card-green">
+                <a id="batch-link" href="#" class="card card-green">
                     <div class="card-icon">⚡</div>
                     <h3>Batch Document Entry <span class="badge">NEW</span></h3>
                     <p>Fast bulk upload with AI-powered classification</p>
@@ -506,6 +506,13 @@
         </p>
     </footer>
     <script>
+        // Set navigation links dynamically based on current hostname
+        (function() {
+            const host = window.location.hostname;
+            document.getElementById('dms-link').href = 'http://' + host;
+            document.getElementById('batch-link').href = 'http://' + host + ':3000';
+        })();
+
         let selectedFolderPath = null;
 
         function showProcessingPage() {
