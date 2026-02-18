@@ -5,8 +5,8 @@
 #        ./prod.sh logs -f autoprocessor-api
 #        ./prod.sh ps
 #
-# Secrets are injected via Infisical (requires INFISICAL_CLIENT_ID and
-# INFISICAL_CLIENT_SECRET in your environment).
+# Secrets are injected via Infisical (requires INFISICAL_UNIVERSAL_AUTH_CLIENT_ID
+# and INFISICAL_UNIVERSAL_AUTH_CLIENT_SECRET in your environment).
 #
 # If Infisical is not installed, use a .env file instead:
 #   cp .env.example .env && edit .env
@@ -19,16 +19,17 @@ COMPOSE_CMD="docker compose -f docker-compose.yml -f docker-compose.server.yml -
 
 # Check if Infisical is available
 if command -v infisical &> /dev/null; then
-    if [ -z "$INFISICAL_CLIENT_ID" ] || [ -z "$INFISICAL_CLIENT_SECRET" ]; then
-        echo "WARNING: Infisical CLI found but INFISICAL_CLIENT_ID / INFISICAL_CLIENT_SECRET not set."
+    if [ -z "$INFISICAL_UNIVERSAL_AUTH_CLIENT_ID" ] || [ -z "$INFISICAL_UNIVERSAL_AUTH_CLIENT_SECRET" ]; then
+        echo "WARNING: Infisical CLI found but credentials not set."
+        echo "Expected: INFISICAL_UNIVERSAL_AUTH_CLIENT_ID and INFISICAL_UNIVERSAL_AUTH_CLIENT_SECRET"
         echo "Falling back to .env file."
         echo ""
         $COMPOSE_CMD "$@"
     else
         export INFISICAL_TOKEN=$(infisical login \
             --method=universal-auth \
-            --client-id="$INFISICAL_CLIENT_ID" \
-            --client-secret="$INFISICAL_CLIENT_SECRET" \
+            --client-id="$INFISICAL_UNIVERSAL_AUTH_CLIENT_ID" \
+            --client-secret="$INFISICAL_UNIVERSAL_AUTH_CLIENT_SECRET" \
             --silent --plain)
         infisical run --env=prod -- $COMPOSE_CMD "$@"
     fi
