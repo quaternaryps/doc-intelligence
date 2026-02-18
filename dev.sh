@@ -10,6 +10,8 @@
 
 set -e
 cd "$(dirname "$0")"
+export PATH="$HOME/bin:$PATH"
+[ -f "$HOME/.infisical-env" ] && . "$HOME/.infisical-env"
 
 COMPOSE_CMD="docker compose -f docker-compose.yml -f docker-compose.dev-server.yml -p dms-dev"
 
